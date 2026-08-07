@@ -1,8 +1,12 @@
-# SQL Data Analysis
+# SQL Fraud Detection & Transaction Risk Analytics
 
-This section contains the SQL workflow used to prepare, validate and investigate transactional data.
+This folder contains the SQL analytical pipeline developed for the fraud detection and transaction risk analytics project.
 
-## Planned SQL Skills
+The objective of the SQL layer is to transform raw AdventureWorks transactional data into a structured risk-analysis dataset by combining data validation, customer behavioural baselines, transaction pattern analysis, feature engineering and an interpretable rule-based risk scoring framework.
+
+> The source dataset does not contain confirmed fraud labels. Therefore, the project identifies suspicious and unusual transaction patterns rather than claiming to predict confirmed fraud.
+
+## SQL Skills
 
 - Data quality checks
 - JOINs and subqueries
@@ -13,3 +17,4 @@ This section contains the SQL workflow used to prepare, validate and investigate
 - Views
 - Fraud pattern investigation
 - Risk feature engineering
+- 
