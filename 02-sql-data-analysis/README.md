@@ -59,6 +59,8 @@ Raw AdventureWorks Data
         │
         └── Tableau Dashboards
 
+```
+
 ## 01 — Data Source Audit
 
 **File:** `01_data_source_audit.sql`
