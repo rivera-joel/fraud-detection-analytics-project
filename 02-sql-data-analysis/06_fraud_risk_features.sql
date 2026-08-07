@@ -1,5 +1,5 @@
 -- ============================================================
--- FRAUD DETECTION & TRANSACTION RISK ANALYTICS
+-- FRAUD DETECTION & TRANSACTION RISK ANALYTICS 
 -- 06 - FRAUD RISK FEATURES
 -- ============================================================
 
