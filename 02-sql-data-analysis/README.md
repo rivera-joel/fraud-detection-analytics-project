@@ -6,27 +6,10 @@ The objective of the SQL layer is to transform raw transactional data into a str
 
 > The source dataset does not contain confirmed fraud labels. Therefore, the project identifies suspicious and unusual transaction patterns rather than claiming to predict confirmed fraud.
 
-## Key SQL Techniques
-
-- Multi-table joins
-- Common Table Expressions (CTEs)
-- Nested analytical pipelines
-- Subqueries
-- Conditional aggregation
-- `CASE WHEN`
-- `LAG()`
-- `ROW_NUMBER()`
-- Windowed `COUNT()` and `AVG()`
-- Historical rolling windows
-- Customer behavioural baselines
-- Risk feature engineering
-- Analytical views
-- Reporting-ready dataset design
-
 ## SQL Pipeline
 
 ```text
-Raw AdventureWorks Data
+     Raw Data
         │
         ▼
 01. Data Source Audit
@@ -60,6 +43,23 @@ Raw AdventureWorks Data
         └── Tableau Dashboards
 
 ```
+
+## Key SQL Techniques
+
+- Multi-table joins
+- Common Table Expressions (CTEs)
+- Nested analytical pipelines
+- Subqueries
+- Conditional aggregation
+- `CASE WHEN`
+- `LAG()`
+- `ROW_NUMBER()`
+- Windowed `COUNT()` and `AVG()`
+- Historical rolling windows
+- Customer behavioural baselines
+- Risk feature engineering
+- Analytical views
+- Reporting-ready dataset design
 
 ## 01 — Data Source Audit
 
@@ -137,6 +137,19 @@ The final rule-based features include:
 Feature combinations are also analysed to identify transactions presenting multiple independent risk signals.
 
 Particular attention is given to avoiding double counting. Related indicators such as same-day versus rapid-repeat activity, or city versus state mismatches, are treated as hierarchical signals rather than automatically counted as independent risks.
+
+## Analytical Design Approach
+
+The risk framework was designed around three principles:
+
+1. **Customer context over global thresholds**  
+   Transactions are evaluated relative to each customer's previous behaviour whenever possible.
+
+2. **Multiple independent signals over isolated anomalies**  
+   Higher investigation priority is assigned when behavioural, velocity or geographic indicators occur together.
+
+3. **Interpretability over black-box scoring**  
+   Every risk score can be traced back to specific transaction-level indicators and summarised through a human-readable `risk_reason`.
 
 ## 07 — Transaction Risk Scoring
 
