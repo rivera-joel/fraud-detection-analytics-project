@@ -7,18 +7,16 @@ Original file is located at
     https://colab.research.google.com/drive/1SGDSSzcZKisYUgguEQ8PEPfcHduN8-kN
 
 # Fraud Detection & Transaction Anomaly Analysis
-## 01 — Python Data Exploration and EDA
 
 This notebook extends the SQL transaction-risk framework through exploratory data analysis, behavioural feature preparation and unsupervised anomaly detection using Isolation Forest.
 
-The SQL layer performs the core data modelling, customer behavioural baseline construction, risk feature engineering and transparent rule-based transaction scoring.
-
-Python is used as a complementary analytical layer to:
-
-- validate the SQL-generated dataset;
-- explore transaction and risk-feature distributions;
-- investigate behavioural patterns;
-- prepare the data for unsupervised anomaly detection.
+1. Exploratory Data Analysis (EDA)
+2. Data Preprocessing
+3. Initial Isolation Forest
+4. SQL vs Python Validation
+5. Behaviour-Focused Isolation Forest
+6. Final Model Interpretation
+7. Tableau Dataset Export
 
 > The source dataset does not contain confirmed fraud labels. Therefore, the analysis focuses on transaction-risk patterns and statistical anomalies rather than confirmed fraud prediction.
 """
