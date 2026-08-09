@@ -13,7 +13,7 @@ This notebook extends the SQL transaction-risk framework through exploratory dat
 1. Exploratory Data Analysis (EDA)
 2. Data Preprocessing
 3. Initial Isolation Forest
-4. SQL vs Python Validation
+4. Cross-Method Risk Validation
 5. Behaviour-Focused Isolation Forest
 6. Final Model Interpretation
 7. Tableau Dataset Export
@@ -221,9 +221,10 @@ plt.xticks(rotation=45)
 
 plt.show()
 
-"""## 8. SQL Risk Score Analysis
+"""## 8. Rule-Based Risk Score Analysis
 
-The distribution of the rule-based SQL risk score is analysed to understand how transactions are prioritised across different levels of investigation risk.
+The distribution of the rule-based transaction risk score is analysed to understand how transactions are prioritised across different levels of investigation priority.
+
 """
 
 risk_score_distribution = (
@@ -254,7 +255,7 @@ risk_level_distribution
 
 """## 9. Transaction Behaviour by Risk Level
 
-Transaction characteristics are compared across SQL risk levels to understand how behavioural and value-based patterns differ between low-, medium- and high-priority transactions.
+Transaction characteristics are compared across Rule-Based Risk Level to understand how behavioural and value-based patterns differ between low-, medium- and high-priority transactions.
 """
 
 risk_level_summary = (
@@ -302,7 +303,7 @@ high_risk_transactions[
 
 """### EDA Findings
 
-The exploratory analysis shows that the SQL risk framework identifies a relatively small subset of transactions with unusual behavioural characteristics.
+The exploratory analysis shows that the rule-based risk framework identifies a relatively small subset of transactions with unusual behavioural characteristics.
 
 High-priority transactions are not necessarily the transactions with the highest absolute values. Instead, many are characterised by a combination of:
 
@@ -320,7 +321,7 @@ The preprocessing stage prepares the analytical dataset for unsupervised anomaly
 
 Unlike conventional predictive modelling, unusual but valid observations are deliberately preserved because they may represent the anomalies the model is intended to detect.
 
-SQL-generated risk scores, risk classifications and rule-based indicators are excluded from the model features to allow an independent comparison between the SQL risk framework and the Python anomaly-detection model.
+This prevents information leakage and enables an independent comparison between rule-based risk scoring and data-driven anomaly detection.
 """
 
 # Create modelling copy
@@ -580,11 +581,11 @@ print(
     model_results["top_10pct_anomaly"].sum()
 )
 
-"""## 7. SQL vs Python Risk Comparison
+"""## 7. Cross-Method Risk Validation
 
-The independently generated Python anomaly scores are compared with the SQL rule-based risk classifications.
+The rule-based transaction risk framework is compared with independently generated Isolation Forest anomaly scores.
 
-This comparison evaluates whether transactions prioritised through transparent behavioural rules also appear unusual from an unsupervised machine-learning perspective.
+This cross-method validation evaluates whether transactions prioritised through transparent behavioural rules also appear unusual from an unsupervised machine-learning perspective.
 """
 
 # Compare risk levels
@@ -594,7 +595,7 @@ pd.crosstab(
 )
 
 # Compare top anomalies
-sql_python_comparison = (
+cross_method_comparison = (
     model_results
     .groupby("risk_level")
     .agg(
@@ -607,17 +608,17 @@ sql_python_comparison = (
     .round(4)
 )
 
-sql_python_comparison
+cross_method_comparison
 
 """### Cross-Method Agreement
 
-The comparison shows strong alignment between the independently developed SQL risk framework and the Isolation Forest anomaly model.
+The comparison shows strong alignment between the independently developed rule-based risk framework and the Isolation Forest anomaly model.
 
-Transactions assigned higher SQL risk levels also exhibit substantially higher Python anomaly scores and are disproportionately represented among the most unusual transactions identified by the model.
+Transactions assigned higher rule-based risk levels also exhibit substantially higher Isolation Forest anomaly scores and are disproportionately represented among the most unusual transactions identified by the model.
 """
 
 # Calculate overlap rates
-comparison_rates = sql_python_comparison.copy()
+comparison_rates = cross_method_comparison.copy()
 
 comparison_rates["top_1pct_rate"] = (
     comparison_rates["top_1pct"] /
@@ -655,8 +656,8 @@ comparison_rates[
     figsize=(10, 5)
 )
 
-plt.title("Python Anomaly Concentration by SQL Risk Level")
-plt.xlabel("SQL Risk Level")
+plt.title("Anomaly Concentration by Rule-Based Risk Level")
+plt.xlabel("Rule-Based Risk Level")
 plt.ylabel("Transactions in Anomaly Group (%)")
 plt.xticks(rotation=0)
 plt.legend(
@@ -666,7 +667,7 @@ plt.legend(
 plt.show()
 
 # Review model-only anomalies
-python_only_anomalies = (
+model_only_anomalies = (
     model_results[
         (model_results["risk_level"] == "Low") &
         (model_results["top_1pct_anomaly"] == 1)
@@ -677,7 +678,7 @@ python_only_anomalies = (
     )
 )
 
-python_only_anomalies[
+model_only_anomalies[
     [
         "SalesOrderID",
         "CustomerID",
@@ -692,7 +693,7 @@ python_only_anomalies[
     ]
 ].head(10)
 
-# Review SQL high risk
+# Review high-risk transactions
 high_risk_comparison = (
     model_results[
         model_results["risk_level"] == "High"
@@ -725,7 +726,7 @@ Because the Python model was trained without SQL-generated risk scores, risk lev
 """
 
 # Calculate overlap rates
-comparison_rates = sql_python_comparison.copy()
+comparison_rates = cross_method_comparison.copy()
 
 comparison_rates["top_1pct_rate"] = (
     comparison_rates["top_1pct"]
@@ -755,7 +756,7 @@ comparison_rates[
 
 - A strong relationship emerges between the two independent approaches.
 
-- All SQL High-risk transactions fall within the top 10% of Isolation Forest anomalies, while 80% are within the top 5% and 20% within the top 1%.
+- All rule-based High-risk transactions fall within the top 10% of Isolation Forest anomalies, while 80% are within the top 5% and 20% within the top 1%.
 
 - Medium-risk transactions also show substantially greater anomaly concentration than Low-risk transactions.
 
@@ -774,23 +775,23 @@ comparison_rates[
     figsize=(10, 5)
 )
 
-plt.title("Python Anomaly Concentration by SQL Risk Level")
-plt.xlabel("SQL Risk Level")
+plt.title("Anomaly Concentration by Rule-Based Risk Level")
+plt.xlabel("Rule-Based Risk Level")
 plt.ylabel("Transactions in Anomaly Group (%)")
 plt.xticks(rotation=0)
 plt.legend(["Top 1%", "Top 5%", "Top 10%"])
 
 plt.show()
 
-"""## 9. Python-Only Anomaly Investigation
+"""## 9. Model-Only Anomaly Investigation
 
 Transactions classified as Low risk by the SQL framework but ranked within the top 1% of Isolation Forest anomalies are examined separately.
 
-These observations are particularly relevant because they may reveal unusual multivariate patterns that do not exceed any individual SQL rule threshold.
+These observations are particularly relevant because they may reveal unusual multivariate patterns that do not exceed any individual rule-based threshold.
 """
 
 # Identify model-only anomalies
-python_only_anomalies = (
+model_only_anomalies = (
     model_results[
         (model_results["risk_level"] == "Low")
         & (model_results["top_1pct_anomaly"] == 1)
@@ -802,12 +803,12 @@ python_only_anomalies = (
 )
 
 print(
-    f"SQL Low-risk transactions in Python top 1%: "
-    f"{len(python_only_anomalies):,}"
+    f"rule-based Low-risk transactions in model top 1%: "
+    f"{len(model_only_anomalies):,}"
 )
 
 # Review model-only anomalies
-python_only_anomalies[
+model_only_anomalies[
     [
         "SalesOrderID",
         "CustomerID",
@@ -824,7 +825,7 @@ python_only_anomalies[
 
 """### Behavioural Profile Comparison
 
-Python-only anomalies are compared with the broader SQL Low-risk population to identify which behavioural characteristics make them statistically unusual.
+Model-only anomalies are compared with the broader SQL Low-risk population to identify which behavioural characteristics make them statistically unusual.
 """
 
 # Compare behavioural profiles
@@ -834,7 +835,7 @@ low_risk_normal = model_results[
 ]
 
 profile_comparison = pd.DataFrame({
-    "Python Top 1%": python_only_anomalies[
+    "Model Top 1%": model_only_anomalies[
         [
             "order_value",
             "days_since_previous_order",
@@ -859,10 +860,10 @@ profile_comparison
 
 """## 10. High-Risk Transaction Validation
 
-The ten transactions classified as High risk by the SQL framework are reviewed alongside their Python anomaly scores and percentiles.
+The ten transactions classified as High risk by the SQL framework are reviewed alongside their model anomaly scores and percentiles.
 """
 
-# Review SQL high risk
+# Review high-risk transactions
 high_risk_comparison = (
     model_results[
         model_results["risk_level"] == "High"
@@ -891,7 +892,7 @@ high_risk_comparison[
 
 """## Model Interpretation
 
-- The SQL and Python approaches provide complementary perspectives on transaction risk.
+- The rule-based and anomaly-detection approaches provide complementary perspectives on transaction risk.
 
 - The SQL framework offers transparent and directly interpretable investigation rules based on transaction velocity, customer spending deviations and geographic inconsistencies.
 
@@ -901,23 +902,23 @@ high_risk_comparison[
 
 ### High-Risk Validation Findings
 
-- The SQL High-risk transactions show strong alignment with the independently generated Isolation Forest anomaly scores.
+- The rule-based High-risk transactions show strong alignment with the independently generated Isolation Forest anomaly scores.
 
-- All ten High-risk transactions fall within the top 10% of Python anomalies, eight fall within the top 5%, and two fall within the top 1%.
+- All ten High-risk transactions fall within the top 10% of Isolation Forest anomalies, eight fall within the top 5%, and two fall within the top 1%.
 
 - The strongest cases combine unusually rapid repeat purchasing with transaction values substantially above the customer's historical average.
 
 - This convergence suggests that the transparent SQL behavioural rules are capturing transaction patterns that are also statistically unusual when evaluated through an unsupervised multivariate model.
 
-## 11. Python-Only Anomaly Investigation
+## 11. Model-Only Anomaly Investigation
 
 Transactions classified as Low risk by the SQL framework but ranked within the top 1% of Isolation Forest anomalies are examined separately.
 
-These transactions may represent unusual combinations of behavioural characteristics that do not exceed any individual SQL rule threshold.
+These transactions may represent unusual combinations of behavioural characteristics that do not exceed any individual rule-based threshold.
 """
 
 # Identify model-only anomalies
-python_only_anomalies = (
+model_only_anomalies = (
     model_results[
         (model_results["risk_level"] == "Low")
         & (model_results["top_1pct_anomaly"] == 1)
@@ -929,12 +930,12 @@ python_only_anomalies = (
 )
 
 print(
-    f"Python-only top 1% anomalies: "
-    f"{len(python_only_anomalies):,}"
+    f"Model-only top 1% anomalies: "
+    f"{len(model_only_anomalies):,}"
 )
 
 # Review model-only anomalies
-python_only_anomalies[
+model_only_anomalies[
     [
         "SalesOrderID",
         "CustomerID",
@@ -967,8 +968,8 @@ low_risk_normal = model_results[
 
 # Compare median profiles
 profile_comparison = pd.DataFrame({
-    "Python Top 1%": (
-        python_only_anomalies[comparison_features]
+    "Model Top 1%": (
+        model_only_anomalies[comparison_features]
         .median()
     ),
     "Other Low Risk": (
@@ -979,15 +980,15 @@ profile_comparison = pd.DataFrame({
 
 profile_comparison
 
-"""### Python-Only Anomaly Findings
+"""### Model-Only Anomaly Findings
 
-- The Python-only anomalies show a distinct behavioural profile rather than an obviously higher-risk transaction pattern.
+- The model-only anomalies show a distinct behavioural profile rather than an obviously higher-risk transaction pattern.
 
 - Compared with the broader Low-risk population, these transactions are associated with customers who have substantially more purchasing history, lower typical transaction values and shorter intervals between purchases.
 
 - This highlights an important distinction between statistical anomaly detection and transaction-risk detection. Isolation Forest identifies observations that are unusual within the multivariate feature space, but unusual behaviour is not necessarily suspicious behaviour.
 
-- For this reason, the Python anomaly score is treated as a complementary investigation signal rather than a standalone fraud-risk classification.
+- For this reason, the Isolation Forest anomaly score is treated as a complementary investigation signal rather than a standalone fraud-risk classification.
 
 ## 12. Behaviour-Focused Anomaly Model
 
@@ -1072,17 +1073,17 @@ model_results[
 
 """### Behaviour-Focused Model Findings
 
-- The refined behavioural Isolation Forest produces stronger alignment with the SQL risk framework.
+- The refined behavioural Isolation Forest produces stronger alignment with the rule-based risk framework.
 
-- All ten SQL High-risk transactions fall within the top 5% of behavioural anomalies, while three fall within the top 1%.
+- All ten rule-based High-risk transactions fall within the top 5% of behavioural anomalies, while three fall within the top 1%.
 
 - The refinement reduces the influence of absolute spending levels and focuses the model more directly on transaction timing, purchasing history and deviations from customer-specific spending behaviour.
 
-- The model is not treated as a fraud classifier. Instead, it provides a complementary statistical prioritisation signal alongside the transparent SQL risk framework.
+- The model is not treated as a fraud classifier. Instead, it provides a complementary statistical prioritisation signal alongside the transparent rule-based risk framework.
 
 ## 13. Behaviour Model Comparison
 
-The refined anomaly model is compared across SQL risk levels to evaluate how strongly behavioural anomaly rankings concentrate among higher-priority transactions.
+The refined anomaly model is compared across Rule-Based Risk Levels to evaluate how strongly behavioural anomaly rankings concentrate among higher-priority transactions.
 """
 
 # Create behaviour thresholds
@@ -1153,8 +1154,8 @@ behaviour_rates[
     figsize=(10, 5)
 )
 
-plt.title("Behavioural Anomaly Concentration by SQL Risk Level")
-plt.xlabel("SQL Risk Level")
+plt.title("Behavioural Anomaly Concentration by Rule-Based Risk Level")
+plt.xlabel("Rule-Based Risk Level")
 plt.ylabel("Transactions in Anomaly Group (%)")
 plt.xticks(rotation=0)
 plt.legend(["Top 1%", "Top 5%", "Top 10%"])
