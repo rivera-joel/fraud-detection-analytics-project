@@ -268,3 +268,15 @@ As a result:
 * The framework should be interpreted as a decision-support and prioritisation system rather than a production fraud-classification model.
 
 A production implementation could extend the framework using confirmed investigation outcomes, supervised fraud labels and continuous model-performance monitoring.
+
+---
+
+## Usage and Copyright
+```
+
+This repository is published for portfolio and educational purposes only.
+
+You may view, download and reference this repository for learning purposes, but redistribution, reproduction, modification or commercial use of the contents without prior written permission is not permitted.
+
+© 2026 Joel Rivera Garmendia. All rights reserved.
+
