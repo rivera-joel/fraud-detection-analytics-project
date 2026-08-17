@@ -1,10 +1,13 @@
-<h1 align="center">Fraud Detection & Transaction Risk Analytics</h1>
+# Fraud Detection & Transaction Risk Analytics
 
-<p align="center">
-  End-to-end fraud analytics project using SQL, Python and Tableau to
-  investigate suspicious transaction patterns, develop risk indicators
-  and support fraud-monitoring decisions.
-</p>
+**End-to-end fraud analytics project using SQL, Python and Tableau to transform raw transactional data into an interpretable risk-monitoring and investigation workflow.**
+
+| Transactions Analysed | Medium Priority | High Priority | BI Output                   |
+| --------------------: | ---------------------: | ------------: | --------------------------- |
+|            **31,465** |        **612 (1.95%)** |        **10** | **5 analytical dashboards** |
+
+
+---
 
 <p align="center">
   <img
@@ -33,105 +36,235 @@
   />
 </p>
 
----
+## Executive Summary
 
-<h2>Project Overview</h2>
+Fraud investigation teams cannot manually review every transaction with the same level of attention.
 
-<p>
-  Fraud investigation teams process large volumes of transactions and cannot
-  manually review every case. Effective fraud analytics requires combining
-  transactional investigation, customer behaviour analysis, risk indicators
-  and clear visual monitoring.
-</p>
+This project develops an end-to-end analytical workflow that transforms raw transactional data into a prioritised investigation dataset by combining:
 
-<p>
-  This project investigates an end-to-end fraud analytics workflow, starting with
-  raw transactional data and progressing through SQL-based investigation,
-  Python analysis and risk scoring, and an interactive Tableau dashboard
-  designed to support fraud-monitoring and prioritisation decisions.
-</p>
+* **SQL** for data validation, behavioural analysis, feature engineering and rule-based risk scoring.
+* **Python** for exploratory analysis and unsupervised anomaly detection.
+* **Tableau** for risk monitoring, transaction investigation and customer-level analysis.
+
+The objective is not simply to flag high-value transactions, but to identify activity that is **unusual relative to the customer's own historical behaviour** and combine multiple independent risk signals into an interpretable investigation framework.
+
+> **Important:** The source dataset does not contain confirmed fraud labels. Therefore, the project identifies suspicious or anomalous transaction patterns and investigation priorities rather than claiming to predict confirmed fraud.
 
 ---
 
-<h2>Project Objectives</h2>
+## Key Results & Insights
 
-<table width="100%">
-  <tr>
-    <th align="left">Objective</th>
-    <th align="left">Description</th>
-  </tr>
-  <tr>
-    <td><strong>Investigate suspicious transactions</strong></td>
-    <td>Identify unusual transaction patterns, anomalies and potential fraud indicators.</td>
-  </tr>
-  <tr>
-    <td><strong>Develop customer risk profiles</strong></td>
-    <td>Measure behavioural risk using transaction history, frequency, location and device activity.</td>
-  </tr>
-  <tr>
-    <td><strong>Demonstrate advanced SQL</strong></td>
-    <td>Apply CTEs, window functions, joins, subqueries, views and analytical logic.</td>
-  </tr>
-  <tr>
-    <td><strong>Build fraud risk features</strong></td>
-    <td>Create interpretable indicators for transaction, customer and merchant-level risk.</td>
-  </tr>
-  <tr>
-    <td><strong>Communicate findings visually</strong></td>
-    <td>Develop a Tableau dashboard for fraud monitoring, investigation and business decision-making.</td>
-  </tr>
-</table>
+### 1. Investigation can be concentrated on a small subset of transactions
 
----
+From **31,465 transactions**, the rule-based risk framework classified:
 
-<h2>End-to-End Workflow</h2>
+| Risk Level | Transactions |  Share |
+| ---------- | -----------: | -----: |
+| Low        |       30,853 | 98.05% |
+| Medium     |          602 |  1.91% |
+| High       |           10 |  0.03% |
 
-<p align="center">
-  <strong>Raw Transaction Data</strong>
-  <br>
-  ↓
-  <br>
-  <strong>SQL Data Validation and Preparation</strong>
-  <br>
-  ↓
-  <br>
-  <strong>SQL Fraud Pattern Investigation</strong>
-  <br>
-  ↓
-  <br>
-  <strong>Python Exploratory Analysis and Feature Engineering</strong>
-  <br>
-  ↓
-  <br>
-  <strong>Risk Scoring and Model Evaluation</strong>
-  <br>
-  ↓
-  <br>
-  <strong>Tableau Fraud Monitoring Dashboard</strong>
-  <br>
-  ↓
-  <br>
-  <strong>Business Insights and Recommendations</strong>
-</p>
+This concentrates investigation on approximately **1.95% of the transaction population**, allowing analysts to prioritise cases presenting stronger risk signals rather than reviewing the full dataset uniformly.
+
+### 2. High transaction value alone was not the strongest risk signal
+
+High-priority transactions were not necessarily those with the largest absolute transaction values.
+
+Several transactions became more relevant because their values were **unusually high relative to that customer's previous behaviour**, particularly when combined with short intervals between purchases.
+
+This demonstrates why behavioural baselines can provide more meaningful investigation context than simple global value thresholds.
+
+### 3. Combining signals provides stronger investigation context
+
+The framework evaluates multiple dimensions of suspicious behaviour:
+
+* Same-day repeat transactions
+* Rapid repeat transactions
+* Transaction amount spikes
+* Billing / shipping city mismatches
+* State or province mismatches
+
+Higher investigation priority is assigned when independent behavioural, velocity and geographic indicators occur together.
+
+Related indicators are handled hierarchically to avoid artificially inflating risk scores through double counting.
+
+### 4. Explainability was prioritised over black-box scoring
+
+Every prioritised transaction retains a human-readable **risk reason** explaining why the transaction was flagged.
+
+This allows an investigator to move from:
+
+**Risk Score → Triggered Indicators → Customer Behaviour → Transaction Detail**
+
+rather than relying on an unexplained model output.
 
 ---
 
-<h2>Repository Structure</h2>
+## Business Impact
+
+The project demonstrates how analytics can convert a large transaction population into a structured fraud-investigation workflow.
+
+### Investigation prioritisation
+
+Instead of treating all **31,465 transactions** equally, the analytical layer surfaces a much smaller group requiring additional attention.
+
+### Behaviour-based monitoring
+
+Customer-specific historical baselines help identify transactions that may appear normal globally but are abnormal for the individual customer.
+
+### Explainable decision support
+
+Risk scores are accompanied by the underlying reasons and indicators, allowing investigators to understand why a transaction has been prioritised.
+
+### Reusable analytics layer
+
+SQL analytical views create a consistent dataset that can be reused by both Python analysis and Tableau reporting without rebuilding the risk logic downstream.
+
+### Investigation-oriented Business Intelligence
+
+The Tableau solution translates analytical outputs into a navigable workflow from high-level monitoring to individual transaction and customer investigation.
+
+---
+
+## End-to-End Analytical Workflow
+
+```text
+Raw Transaction Data
+        ↓
+SQL Data Validation & Quality Checks
+        ↓
+Customer Behavioural Baselines
+        ↓
+Transaction Pattern Analysis
+        ↓
+Risk Feature Engineering
+        ↓
+Rule-Based Risk Scoring
+        ↓
+Python Anomaly Detection
+        ↓
+Risk Prioritisation
+        ↓
+Tableau Monitoring & Investigation
+        ↓
+Business Insights & Investigation Decisions
+```
+
+---
+
+## SQL Analytics
+
+The SQL layer transforms relational transaction data into an investigation-ready analytical dataset.
+
+Key techniques include:
+
+* Multi-table joins
+* Common Table Expressions (CTEs)
+* Window functions
+* `LAG()`
+* `ROW_NUMBER()`
+* Conditional aggregation
+* Historical behavioural baselines
+* Feature engineering
+* Analytical views
+* Transaction-level risk scoring
+
+The final SQL dataset preserves all **31,465 transactions** while enriching them with behavioural, velocity, geographic and risk-scoring features.
+
+➡️ [View SQL Analysis](./02-sql-data-analysis/)
+
+---
+
+## Python Fraud Analysis
+
+Python provides a complementary data-driven perspective to the transparent SQL risk framework.
+
+The analytical layer includes:
+
+* Data validation with pandas
+* Exploratory Data Analysis
+* Feature analysis
+* Anomaly detection
+* Comparison of anomalous activity with rule-based risk indicators
+* Business-focused interpretation of suspicious patterns
+
+The objective is to investigate whether unusual transactions identified statistically align with the behavioural signals identified through SQL.
+
+➡️ [View Python Analysis](./03-python-fraud-analysis/)
+
+---
+
+## Tableau Risk Analytics
+
+The final analytical layer converts the fraud-risk outputs into an interactive investigation-oriented BI solution.
+
+The Tableau suite includes:
+
+1. **Risk Overview**
+2. **Transaction Investigation**
+3. **Behavioural Risk**
+4. **Geographic Risk**
+5. **Customer Risk**
+
+The dashboards allow users to move from overall transaction-risk monitoring to individual transaction and customer investigation.
+
+➡️ [View Tableau Dashboards](./04-tableau-dashboard/)
+
+---
+
+## Repository Structure
 
 ```text
 fraud-detection-analytics-project/
 │
 ├── 01-project-documentation/
+│   ├── Fraud Analytics Data Model Schema.png
+│   ├── Fraud-Analytics-Workflow.png
+│   ├── data-dictionary.md
+│   ├── risk-methodology.md
 │   └── README.md
 │
 ├── 02-sql-data-analysis/
+│   ├── 01_data_source_audit.sql
+│   ├── 02_data_quality_checks.sql
+│   ├── 03_customer_transaction_baselines.sql
+│   ├── 04_transaction_pattern_analysis.sql
+│   ├── 05_payment_and_geographic_risk.sql
+│   ├── 06_fraud_risk_features.sql
+│   ├── 07_transaction_risk_scoring.sql
+│   ├── 08_analytical_views.sql
+│   ├── 09_analytics_dataset.sql
 │   └── README.md
 │
 ├── 03-python-fraud-analysis/
+│   ├── 01_fraud_anomaly_detection_analysis.ipynb
+│   ├── 01_fraud_anomaly_detection_analysis.py
 │   └── README.md
 │
 ├── 04-tableau-dashboard/
+│   ├── dashboard-previews/
+│   ├── Dashboards-BI.pdf
 │   └── README.md
 │
-├── .gitignore
 └── README.md
+```
+
+---
+
+## Tools & Techniques
+
+**SQL · Python · pandas · Tableau · EDA · Feature Engineering · Anomaly Detection · Business Intelligence · Fraud Analytics · Risk Analytics**
+
+---
+
+## Analytical Limitations
+
+The dataset does not contain confirmed fraudulent / non-fraudulent transaction labels.
+
+As a result:
+
+* Risk scores represent **investigation priority**, not fraud probability.
+* Anomaly detection identifies unusual behaviour, not confirmed fraudulent behaviour.
+* The framework should be interpreted as a decision-support and prioritisation system rather than a production fraud-classification model.
+
+A production implementation could extend the framework using confirmed investigation outcomes, supervised fraud labels and continuous model-performance monitoring.
