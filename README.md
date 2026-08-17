@@ -45,7 +45,7 @@
 </p>
 
 <p>
-  This project simulates an end-to-end fraud analytics workflow, starting with
+  This project investigates an end-to-end fraud analytics workflow, starting with
   raw transactional data and progressing through SQL-based investigation,
   Python analysis and risk scoring, and an interactive Tableau dashboard
   designed to support fraud-monitoring and prioritisation decisions.
